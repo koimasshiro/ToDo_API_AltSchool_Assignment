@@ -157,10 +157,9 @@ router.get("/delete/:id", authGuard, async (req, res, next) => {
 
 router.delete("/delete/:id", authGuard, async (req, res, next) => {
   try {
-    const taskId = req.params.id;
     
     // Find the task by ID
-    const t = await task.findOne({ _id: taskId });
+    const t = await task.findOne({ _id: req.params.id });
 
     // Check if the task exists and belongs to the authenticated user
     if (!t || t.user.toString() !== req.user._id.toString()) {
@@ -168,8 +167,8 @@ router.delete("/delete/:id", authGuard, async (req, res, next) => {
     }
 
     // Remove the task from the database
-    await t.remove();
-
+    await t.deleteOne();
+    await t.save();
     res.redirect("/home");
   } catch (error) {
     console.log(error);
