@@ -144,6 +144,41 @@ router.get("/home", authGuard, async (req, res, next) => {
   }
 });
 
+// router.get("/delete/:id", authGuard, async (req, res, next) => {
+//   try {
+//     const t = await task.findOne({ _id: req.params.id });
+//     res.render("delete", { t });
+//   } catch (error) {
+//     console.log(error);
+//     res.send("Crazy things are happening!!");
+//   }
+// });
+
+
+router.delete("/delete/:id", authGuard, async (req, res, next) => {
+  try {
+    const taskId = req.params.id;
+    
+    // Find the task by ID
+    const t = await task.findOne({ _id: taskId });
+
+    // Check if the task exists and belongs to the authenticated user
+    if (!t || t.user.toString() !== req.user._id.toString()) {
+      return res.status(404).send("Task not found");
+    }
+
+    // Remove the task from the database
+    await t.remove();
+
+    res.redirect("/home");
+  } catch (error) {
+    console.log(error);
+    res.send("Crazy things are happening!!");
+  }
+});
+
+
+
 router.get("/", authGuard, (req, res, next) => {
   res.redirect("/home");
 });
