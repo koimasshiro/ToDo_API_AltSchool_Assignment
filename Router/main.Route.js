@@ -144,15 +144,15 @@ router.get("/home", authGuard, async (req, res, next) => {
   }
 });
 
-// router.get("/delete/:id", authGuard, async (req, res, next) => {
-//   try {
-//     const t = await task.findOne({ _id: req.params.id });
-//     res.render("delete", { t });
-//   } catch (error) {
-//     console.log(error);
-//     res.send("Crazy things are happening!!");
-//   }
-// });
+router.get("/delete/:id", authGuard, async (req, res, next) => {
+  try {
+    const t = await task.findOne({ _id: req.params.id });
+    res.render("delete", { t });
+  } catch (error) {
+    console.log(error);
+    res.send("Crazy things are happening!!");
+  }
+});
 
 
 router.delete("/delete/:id", authGuard, async (req, res, next) => {
