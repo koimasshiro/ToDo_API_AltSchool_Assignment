@@ -144,4 +144,8 @@ router.get("/home", authGuard, async (req, res, next) => {
   }
 });
 
+router.get("/", authGuard, (req, res, next) => {
+  res.redirect("/home");
+});
+
 module.exports = router;
