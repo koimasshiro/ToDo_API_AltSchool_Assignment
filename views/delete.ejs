@@ -12,7 +12,7 @@
 
     <p><%= t.body%></p>
 
-    <form method="POST" action="/delete/<%=t._id%>?_method=DELETE">
+    <form method="post" action="/delete/<%=t._id%>">
         <button type="submit">Yes</button>
         <a href="/home">Cancel</a>
     </form>
