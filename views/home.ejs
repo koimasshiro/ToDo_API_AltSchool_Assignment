@@ -13,8 +13,13 @@
     <br>
     <%tasks.forEach(e =>{%>
     <ul>
-        <li><%= e.body%></li>
-        <li><a href="/read/<%= e._id%>">Mark As Done</a></li>
+        <%if(e.done){%>
+        <li><s><%= e.body%></s></li>
+        <%}else{%>
+            <li><%= e.body%></li>
+            <li><a href="/read/<%= e._id%>">Mark As Done</a></li>
+            <li><a href="/edit/<%= e._id%>">Edit Task</a></li>
+            <%}%>
     </ul><%})%>
 </body>
 </html>
