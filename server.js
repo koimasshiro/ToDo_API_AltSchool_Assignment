@@ -9,6 +9,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
 const PORT = 8000;
 const main = require('./Router/main.Route')
 mongoose.connect(
@@ -19,5 +20,5 @@ mongoose.connect(
 
 app.use('/',main)
 app.listen(PORT, () => {
-    console.log(`Server running on port: ${PORT}`)
+    console.log(`Server is running on port: ${PORT}`)
 });
