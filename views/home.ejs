@@ -1,16 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home</title>
-</head>
-<body>
-    
-    <a href="/create">
-        Create New Task
-    </a>
-    <br>
+
+    <style type="text/css" media="screen">
+    </style>
+  </head>
+  <body>
+    <%if(tasks <= 0){%>
+    <h1>You don't have any task</h1>
+    <a href="/create"> Create New Task </a>
+    <%}else{%> <%tasks.forEach(e =>{%>
+    <ul>
+      <%if(e.done){%>
+      <li><s><%= e.body%></s></li>
+      <%}else{%>
+      <li><%= e.body%></li>
+      <li><a href="/read/<%= e._id%>">Mark As Done</a></li>
+      <li><a href="/edit/<%= e._id%>">Edit Task</a></li>
+      <li><a href="/delete/<%= e._id%>">Delete Task</a></li>
+
+      <%}%>
+    </ul>
+    <%})%> <%}%>
+
+
+    <!---->
+    <!-- <br>
     <%tasks.forEach(e =>{%>
     <ul>
         <%if(e.done){%>
@@ -22,6 +40,6 @@
             <li><a href="/delete/<%= e._id%>">Delete Task</a></li>
 
             <%}%>
-    </ul><%})%>
-</body>
+    </ul><%})%> -->
+  </body>
 </html>

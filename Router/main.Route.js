@@ -144,37 +144,37 @@ router.get("/home", authGuard, async (req, res, next) => {
   }
 });
 
-router.get("/delete/:id", authGuard, async (req, res, next) => {
-  try {
-    const t = await task.findOne({ _id: req.params.id });
-    res.render("delete", { t });
-  } catch (error) {
-    console.log(error);
-    res.send("Crazy things are happening!!");
-  }
-});
+// router.get("/delete/:id", authGuard, async (req, res, next) => {
+//   try {
+//     const t = await task.findOne({ _id: req.params.id });
+//     res.render("delete", { t });
+//   } catch (error) {
+//     console.log(error);
+//     res.send("Crazy things are happening!!");
+//   }
+// });
 
 
-router.delete("/delete/:id", authGuard, async (req, res, next) => {
-  try {
+// router.delete("/delete/:id", authGuard, async (req, res, next) => {
+//   try {
     
-    // Find the task by ID
-    const t = await task.findOne({ _id: req.params.id });
+//     // Find the task by ID
+//     const t = await task.findOne({ _id: req.params.id });
 
-    // Check if the task exists and belongs to the authenticated user
-    if (!t || t.user.toString() !== req.user._id.toString()) {
-      return res.status(404).send("Task not found");
-    }
+//     // Check if the task exists and belongs to the authenticated user
+//     if (!t || t.user.toString() !== req.user._id.toString()) {
+//       return res.status(404).send("Task not found");
+//     }
 
-    // Remove the task from the database
-    await t.deleteOne();
-    await t.save();
-    res.redirect("/home");
-  } catch (error) {
-    console.log(error);
-    res.send("Crazy things are happening!!");
-  }
-});
+//     // Remove the task from the database
+//     await t.deleteOne();
+//     await t.save();
+//     res.redirect("/home");
+//   } catch (error) {
+//     console.log(error);
+//     res.send("Crazy things are happening!!");
+//   }
+// });
 
 
 
