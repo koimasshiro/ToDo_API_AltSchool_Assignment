@@ -1,8 +1,9 @@
 const task = require("../model/task");
 const user = require("../model/user");
 const jwt = require('jsonwebtoken')
-
 const router = require("express").Router();
+
+
 const authGuard = async(req,res, next)=>{
     try {
     let token;
@@ -19,38 +20,43 @@ const authGuard = async(req,res, next)=>{
     }
 }
 
+//Login Route
+
 router.get("/login", (req, res, next) => {
   res.render("login");
 });
 
-router.get("/register", (req, res, next) => {
-  res.render("register");
+router.post("/login", async (req, res, next) => {
+  const {username, password} = req.body
+  try {
+      const findUser = await user.findOne({username, password})
+      const token = jwt.sign(
+          {
+            user_id: findUser._id
+          },
+          'idontlikebread'
+        );
+        console.log(token);
+      const options = {
+          expires: new Date(
+            Date.now() + 1 * 24 * 60 * 60 * 1000
+          ),
+          httpOnly: true
+        };
+      res
+      .status(200)
+      .cookie('token', token, options).redirect('/home')
+    } catch (error) {
+      console.log(error);
+      res.send('Error In Creation, Either Duplicate Or invalid input')
+    }
 });
 
-router.post("/login", async (req, res, next) => {
-    const {username, password} = req.body
-    try {
-        const findUser = await user.findOne({username, password})
-        const token = jwt.sign(
-            {
-              user_id: findUser._id
-            },
-            'idontlikebread'
-          );
-          console.log(token);
-        const options = {
-            expires: new Date(
-              Date.now() + 1 * 24 * 60 * 60 * 1000
-            ),
-            httpOnly: true
-          };
-        res
-        .status(200)
-        .cookie('token', token, options).redirect('/home')
-      } catch (error) {
-        console.log(error);
-        res.send('Error In Creation, Either Duplicate Or invalid input')
-      }
+
+
+//Register Route
+router.get("/register", (req, res, next) => {
+  res.render("register");
 });
 
 router.post("/register",async (req, res, next) => {
@@ -78,6 +84,8 @@ router.post("/register",async (req, res, next) => {
   }
 });
 
+
+//Create a new task route
 router.get("/create", authGuard, (req, res, next) => {
   res.render("create");
 });
@@ -100,10 +108,12 @@ router.post("/create", authGuard, async (req, res, next) => {
   }
 });
 
-router.get("/read/:id", authGuard, async (req, res, next) => {
+//Toggler Route
+router.get("/toggle/:id", authGuard, async (req, res, next) => {
   try {
     const t = await task.findOne({ _id: req.params.id });
-    t.done = true;
+    t.done = !t.done;
+    // t.done = true;
     await t.save();
     res.redirect("/home");
   } catch (error) {
@@ -111,6 +121,9 @@ router.get("/read/:id", authGuard, async (req, res, next) => {
     res.send("Crazy things are happening!!");
   }
 });
+
+
+//Edit Route
 
 router.get("/edit/:id", authGuard, async (req, res, next) => {
   try {
@@ -134,6 +147,8 @@ router.post("/edit/:id", authGuard, async (req, res, next) => {
   }
 });
 
+
+//Home Route
 router.get("/home", authGuard, async (req, res, next) => {
   try {
     const tasks = await task.find({ user: req.user._id });
@@ -144,38 +159,29 @@ router.get("/home", authGuard, async (req, res, next) => {
   }
 });
 
-// router.get("/delete/:id", authGuard, async (req, res, next) => {
-//   try {
-//     const t = await task.findOne({ _id: req.params.id });
-//     res.render("delete", { t });
-//   } catch (error) {
-//     console.log(error);
-//     res.send("Crazy things are happening!!");
-//   }
-// });
 
+//Delete Route
 
-// router.delete("/delete/:id", authGuard, async (req, res, next) => {
-//   try {
-    
-//     // Find the task by ID
-//     const t = await task.findOne({ _id: req.params.id });
+router.get("/delete/:id", authGuard, async (req, res, next) => {
+  try {
+    const t = await task.findOne({ _id: req.params.id });
+    res.render("delete", { t });
+  } catch (error) {
+    console.log(error);
+    res.send("Crazy things are happening!!");
+  }
+});
 
-//     // Check if the task exists and belongs to the authenticated user
-//     if (!t || t.user.toString() !== req.user._id.toString()) {
-//       return res.status(404).send("Task not found");
-//     }
-
-//     // Remove the task from the database
-//     await t.deleteOne();
-//     await t.save();
-//     res.redirect("/home");
-//   } catch (error) {
-//     console.log(error);
-//     res.send("Crazy things are happening!!");
-//   }
-// });
-
+router.post("/delete/:id", authGuard, async (req, res, next) => {
+  try {
+    const t = await task.findOne({ _id: req.params.id });
+    await task.deleteOne({ _id: t });
+    res.redirect("/home");
+  } catch (error) {
+    console.log(error);
+    res.send("An error occurred while deleting the task.");
+  }
+});
 
 
 router.get("/", authGuard, (req, res, next) => {
