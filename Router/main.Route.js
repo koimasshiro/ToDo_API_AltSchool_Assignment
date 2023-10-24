@@ -8,7 +8,6 @@ const authGuard = async (req, res, next) => {
     let token;
     token = req.cookies.token;
     if (!token) {
-      console.log("No token found. Redirecting to login.");
       res.redirect("/login");
     }
     const decoded = jwt.verify(token, "idontlikebread");
