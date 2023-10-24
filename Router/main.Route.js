@@ -85,6 +85,17 @@ router.post("/register",async (req, res, next) => {
 });
 
 
+
+//Logout Route
+router.get("/logout", (req, res) => {
+  // Clear the token cookie
+  res.clearCookie("token");
+  
+  // Redirect to the login page
+  res.redirect('/login');
+});
+
+
 //Create a new task route
 router.get("/create", authGuard, (req, res, next) => {
   res.render("create");
